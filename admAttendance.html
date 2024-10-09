@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Attendance Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background-color: #eef2f3;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+            display: flex;
+        }
+
+        nav {
+            background: #fff;
+            width: 280px;
+            height: 750px;
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+            /* position: relative; */
+            position: fixed;
+            border-radius: 10px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin: 20px 10px;
+        }
+
+        .logo i {
+            font-size: 24px;
+            margin-right: 15px;
+            color: #333;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin: 10px 0;
+        }
+
+        nav a {
+            color: #333;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        nav a i {
+            margin-right: 10px;
+        }
+
+        nav a:hover {
+            background: #eee;
+            color: #000;
+        }
+
+        .main-container {
+            max-width: 900px;
+            margin: 0 auto;
+            gap: 20px;
+            flex-grow: 1;
+            padding: 0px;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .form-section,
+        .attendance-records {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            border-color: #007BFF;
+            outline: none;
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        .chat-icon {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #007BFF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            color: #fff;
+            font-size: 30px;
+            z-index: 1000;
+            transition: background-color 0.3s;
+        }
+
+        .chat-icon:hover {
+            background-color: #0056b3;
+        }
+
+        .chat-section {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 500px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #e7f0f7;
+        }
+
+        .chat-messages .message {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .chat-messages .admin {
+            background-color: #007BFF;
+            color: white;
+            text-align: right;
+            margin-left: auto;
+        }
+
+        .chat-messages .employee {
+            background-color: #f1f1f1;
+            color: #333;
+            text-align: left;
+            margin-right: auto;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .chat-input button {
+            width: 100px;
+            background-color: #28a745;
+        }
+
+        .chat-input button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="logo">
+            <i class="fas fa-user-shield"></i>
+            <span>Admin Dashboard</span>
+        </div>
+        <ul>
+            <li><a href="admin.html"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="admAttendance.html"><i class="fas fa-users"></i> Attendance</a></li>
+            <li><a href="admProject.html"><i class="fas fa-chart-line"></i> Analytics</a></li>
+            <li><a href="index.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <div class="container">
+            <div class="form-section">
+                <h2>Mark Attendance</h2>
+                <form id="attendanceForm">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" required>
+                    
+                    <label for="teamLeader">Team Leader:</label>
+                    <select id="teamLeader" required>
+                        <option value="">Select Team Leader</option>
+                        <option value="John Doe">John Doe (Team A)</option>
+                        <option value="Jane Smith">Jane Smith (Team B)</option>
+                        <option value="Mike Johnson">Mike Johnson (Team C)</option>
+                        <option value="Sarah Williams">Sarah Williams (Team D)</option>
+                    </select>
+
+                    <label for="teamMember">Team Member:</label>
+                    <select id="teamMember" required>
+                        <option value="">Select Team Member</option>
+                    </select>
+
+                    <label for="employeeId">Employee ID:</label>
+                    <input type="text" id="employeeId" name="employeeId" readonly required>
+
+                    <label for="attendance">Attendance:</label>
+                    <select id="attendance" name="attendance" required>
+                        <option value="">Select Attendance</option>
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                    </select>
+
+                    <button type="submit">Submit Attendance</button>
+                </form>
+            </div>
+
+            <div class="attendance-records">
+                <h2>Attendance Records</h2>
+                <table id="attendanceTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Team Leader</th>
+                            <th>Team Member</th>
+                            <th>Employee ID</th>
+                            <th>Attendance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="chat-icon" id="chatIcon">
+            <i class="fas fa-comments"></i>
+        </div>
+
+        <div class="chat-section" id="chatSection">
+            <div class="chat-header">Chat</div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Type a message...">
+                <button id="sendChatButton">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+       document.addEventListener("DOMContentLoaded", function () {
+    const teamMembers = {
+        "John Doe": ["Alice Johnson", "Bob Smith", "Charlie Brown"],
+        "Jane Smith": ["Dave Wilson", "Eve Davis", "Frank Miller"],
+        "Mike Johnson": ["Grace Lee", "Heidi Kim", "Ivan Garcia"],
+        "Sarah Williams": ["Judy Taylor", "Mallory Anderson", "Niaj Thompson"]
+    };
+
+    const teamLeaderSelect = document.getElementById("teamLeader");
+    const teamMemberSelect = document.getElementById("teamMember");
+    const employeeIdInput = document.getElementById("employeeId");
+    const attendanceForm = document.getElementById("attendanceForm");
+    const attendanceTableBody = document.querySelector("#attendanceTable tbody");
+    const chatIcon = document.getElementById("chatIcon");
+    const chatSection = document.getElementById("chatSection");
+    const chatMessages = document.getElementById("chatMessages");
+    const chatInput = document.getElementById("chatInput");
+    const sendChatButton = document.getElementById("sendChatButton");
+
+    // Function to save attendance data
+    function saveAttendanceData(data) {
+        let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+        attendanceData.push(data);
+        localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+    }
+
+    // Function to load and display attendance data
+    function loadAttendanceData() {
+        let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+        attendanceTableBody.innerHTML = '';
+        attendanceData.forEach(data => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${data.date}</td>
+                <td>${data.teamLeader}</td>
+                <td>${data.teamMember}</td>
+                <td>${data.employeeId}</td>
+                <td>${data.attendance}</td>
+            `;
+            attendanceTableBody.appendChild(row);
+        });
+    }
+
+    teamLeaderSelect.addEventListener("change", function () {
+        const teamLeader = this.value;
+        teamMemberSelect.innerHTML = '<option value="">Select Team Member</option>';
+        if (teamMembers[teamLeader]) {
+            teamMembers[teamLeader].forEach(member => {
+                const option = document.createElement("option");
+                option.value = member;
+                option.textContent = member;
+                teamMemberSelect.appendChild(option);
+            });
+        }
+    });
+
+    teamMemberSelect.addEventListener("change", function () {
+        const selectedMember = this.value;
+        employeeIdInput.value = selectedMember ? selectedMember.charCodeAt(0) + 1000 : "";
+    });
+
+    attendanceForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const date = document.getElementById("date").value;
+        const teamLeader = teamLeaderSelect.value;
+        const teamMember = teamMemberSelect.value;
+        const employeeId = employeeIdInput.value;
+        const attendance = document.getElementById("attendance").value;
+
+        const attendanceData = {
+            date,
+            teamLeader,
+            teamMember,
+            employeeId,
+            attendance
+        };
+
+        saveAttendanceData(attendanceData);
+        loadAttendanceData();
+
+        attendanceForm.reset();
+        teamMemberSelect.innerHTML = '<option value="">Select Team Member</option>';
+        employeeIdInput.value = "";
+    });
+
+    // Load saved attendance data when the page loads
+    loadAttendanceData();
+
+    // Chat functionality
+    chatIcon.addEventListener("click", function () {
+        chatSection.style.display = chatSection.style.display === "none" || chatSection.style.display === "" ? "flex" : "none";
+    });
+
+    sendChatButton.addEventListener("click", function () {
+        const messageText = chatInput.value;
+        if (messageText.trim() === "") return;
+
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", "admin");
+        messageDiv.textContent = messageText;
+        chatMessages.appendChild(messageDiv);
+        chatInput.value = "";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    chatInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            sendChatButton.click();
+        }
+    });
+});
+    </script>
+</body>
+
+</html>

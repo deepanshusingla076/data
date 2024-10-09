@@ -1,0 +1,9 @@
+[
+    { "name": "John Doe", "attendance": "Present" },
+    { "name": "John Doe", "attendance": "Absent" },
+    { "name": "John Doe", "attendance": "Leave" },
+    { "name": "Jane Smith", "attendance": "Present" },
+    { "name": "Jane Smith", "attendance": "Absent" },
+    { "name": "Mark Johnson", "attendance": "Leave" },
+    { "name": "Mark Johnson", "attendance": "Present" }
+]
